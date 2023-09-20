@@ -32,7 +32,7 @@ public class Score {
 	private Grade grade; //학점
 	
 	public Score(ScoreRequestDTO dto) {
-		this.stuName = dto.getName();
+		this.stuName = dto.getStuName();
 		changeScore(dto);
 	}
 	
