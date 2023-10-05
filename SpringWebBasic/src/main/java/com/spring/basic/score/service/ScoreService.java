@@ -3,6 +3,8 @@ package com.spring.basic.score.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.spring.basic.score.dto.ScoreListResponseDTO;
@@ -15,11 +17,16 @@ import lombok.RequiredArgsConstructor;
 //컨트롤러와 레파지토리 사이에 배치되어 기타 비즈니스 로직 처리
 //ex) 값을 가공, 예외 처리, dto로 변ㄴ환, 트랜잭션 등등...
 @Service //빈 등록
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class ScoreService {
 	
 	private final IScoreRepository scoreRepository;
 
+	@Autowired
+	public ScoreService(@Qualifier("jdbc") IScoreRepository scoreRepository) {
+		this.scoreRepository = scoreRepository;
+	}
+	
 	//등록 중간처리
 	//컨트롤러가 DTO를 줬지만
 	//온전한 학생의 정보를 가지는 객체는 Score (Entity)
@@ -43,7 +50,6 @@ public class ScoreService {
 			dtoList.add(dto); //변경한 DTO를 DTO List에 추가
 		}
 		return dtoList;
-		
 	}
 
 	//학생 점수 개별 조회
