@@ -179,12 +179,14 @@ public class ScoreJdbcRepository implements IScoreRepository {
 		String sql = "DELETE FROM score WHERE stu_num = ?";
 		try {
 			conn = DriverManager.getConnection(url, username, password);
+			conn.setAutoCommit(false); // 오토커밋 취소
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, stuNum);
 			
 			int rn = pstmt.executeUpdate(); 
 			if(rn == 1) {
 				System.out.println("DELETE 성공!");
+				conn.commit(); //커밋
 			} else {
 				System.out.println("DELETE 실패!");
 			}
@@ -205,8 +207,34 @@ public class ScoreJdbcRepository implements IScoreRepository {
 
 	@Override
 	public void modify(Score modScore) {
-		// TODO Auto-generated method stub
-
+		String sql = "UPDATE score SET stu_name = ?, kor = ?, eng = ?, math = ?, "
+				+ "total = ?, average = ?, grade = ? WHERE stu_num = ?";
+		try {
+			conn = DriverManager.getConnection(url, username, password);
+			pstmt = conn.prepareStatement(sql);
+			// stuName은 수정할 필요가 없음. 페이지 먼저 잘 확인하기.
+			pstmt.setString(1, modScore.getStuName());
+			pstmt.setInt(2, modScore.getKor());
+			pstmt.setInt(3, modScore.getEng());
+			pstmt.setInt(4, modScore.getMath());
+			pstmt.setInt(5, modScore.getTotal());
+			pstmt.setDouble(6, modScore.getAverage());
+			pstmt.setString(7, String.valueOf(modScore.getGrade()));
+			pstmt.setInt(8, modScore.getStuNum());
+			
+			pstmt.executeUpdate();
+			 
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			try {
+				pstmt.close();
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 }

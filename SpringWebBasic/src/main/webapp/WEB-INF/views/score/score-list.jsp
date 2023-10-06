@@ -109,9 +109,9 @@
                 <li class="list-header">
                     <div class="count">총 학생 수: ${sList.size()}명</div>
                     <div class="sort-link-group">
-                        <div><a href="/basic/score/sort?type=${stuNum}">학번순</a></div>
-                        <div><a href="/basic/score/sort?type=${stuName}">이름순</a></div>
-                        <div><a href="/basic/score/sort?type=${average}">평균순</a></div>
+                        <div><a href="/basic/score/sort?order=stuNum">학번순</a></div>
+                        <div><a href="/basic/score/sort?ofder=stuName">이름순</a></div>
+                        <div><a href="/basic/score/sort?order=average">평균순</a></div>
                     </div>
                 </li>
 

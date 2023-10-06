@@ -73,7 +73,7 @@ public class ScoreController {
 	
 	
 	//5. 수정 화면 열어주기
-	@GetMapping("/modify")
+	@GetMapping("/modify") // Get방식
 	public String modify(int stuNum, Model model) {
 		retrieve(stuNum, model);
 		return "score/score-modify";
@@ -86,7 +86,7 @@ public class ScoreController {
 	}
 	
 	//6. 수정 처리 완료하기
-	@PostMapping("/modify")
+	@PostMapping("/modify") // POST 방식
 	public String modify(int stuNum, ScoreRequestDTO dto) {
 		System.out.println("/score/modify: POST!");
 		
