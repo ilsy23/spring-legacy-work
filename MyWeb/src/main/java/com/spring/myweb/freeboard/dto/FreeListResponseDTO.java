@@ -19,7 +19,6 @@ public class FreeListResponseDTO {
 	private String date;
 	
 	public FreeListResponseDTO(FreeBoard board) {
-		super();
 		this.bno = board.getBno();
 		this.title = board.getTitle();
 		this.writer = board.getWriter();
