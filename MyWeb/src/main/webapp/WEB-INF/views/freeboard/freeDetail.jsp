@@ -11,7 +11,7 @@
                             <p>상세보기</p>
                         </div>
                         
-                        <form action="/myweb/freeboard/modPage" method="post">
+                        <form action="${pageContext.request.contextPath}/freeboard/modPage" method="post">
                             <div>
                                 <label>DATE</label>
                                 <p>${board.date}</p>
@@ -35,7 +35,7 @@
                             </div>
 
                             <button type="submit" class="btn btn-primary">변경</button>
-                            <button type="button" class="btn btn-dark" onclick="location.href='/myweb/freeboard/freeList?pageNo=${p.pageNo}&amount=${p.amount}&keyword=${p.keyword}&condition=${p.condition}'">목록</button>
+                            <button type="button" class="btn btn-dark" onclick="location.href='${pageContext.request.contextPath}/freeboard/freeList?pageNo=${p.pageNo}&amount=${p.amount}&keyword=${p.keyword}&condition=${p.condition}'">목록</button>
                     </form>
                 </div>
             </div>

@@ -4,7 +4,6 @@
 Servers/
 
 ### Eclipse ###
-*.properties
 .metadata
 bin/
 tmp/
@@ -16,6 +15,10 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+
+# Ignore Properties
+*.properties
+email.properties
 
 # External tool builders
 .externalToolBuilders/
