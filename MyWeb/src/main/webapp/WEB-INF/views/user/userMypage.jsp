@@ -19,36 +19,45 @@
                     </ul>
                     <div class="tab-content">
                         <div id="info" class="tab-pane fade in active">
- 
-                            <p>*표시는 필수 입력 표시입니다</p>
-                            <form>
+                            <form name="myForm" method="post">
                             <table class="table">
                                 <tbody class="m-control">
                                     <tr>
-                                        <td class="m-title">*ID</td>
+                                        <td class="m-title">ID</td>
                                         <td><input class="form-control input-sm" name="userId" value="${login}" readonly></td>
                                     </tr>
                                     <tr>
-                                        <td class="m-title">*이름</td>
+                                        <td class="m-title">이름</td>
                                         <td><input class="form-control input-sm" name="userName" value="${userInfo.userName}"></td>
                                     </tr>
                                     <tr>
-                                        <td class="m-title" >*비밀번호</td>
-                                        <td><input class="form-control input-sm" name="userPw"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="m-title">*비밀번호확인</td>
-                                        <td><input class="form-control input-sm" name="userPwChk"></td>
+                                        <td class="m-title" >비밀번호</td>
+                                        <td>
+                                            <button id="pw-page-btn" type="button" class="btn btn-primary">비밀번호 변경</button>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="m-title">E-mail</td>
                                         <td>
-                                            <input class="form-control input-sm" name="userEmail1" value="${userInfo.userEmail1}">
-                                            <select class="form-control input-sm sel" name="userEmail2">
-                                                <option ${userInfo.userEmail2 == '@naver.com' ? 'selected' : '' }>@naver.com</option>
-                                                <option ${userInfo.userEmail2 == '@daum.net' ? 'selected' : '' }>@daum.net</option>
-                                                <option ${userInfo.userEmail2 == '@gmail.com' ? 'selected' : '' }>@gmail.com</option>
-                                            </select>
+                                            <div class="input-group">
+                                                <input class="form-control input-sm" name="userEmail1" value="${userInfo.userEmail1}" onchange="afterChange(this.value)">
+                                                <select class="form-control input-sm sel" name="userEmail2" onchange="afterChange(this.value)">
+                                                    <option ${userInfo.userEmail2 == '@naver.com' ? 'selected' : '' }>@naver.com</option>
+                                                    <option ${userInfo.userEmail2 == '@daum.net' ? 'selected' : '' }>@daum.net</option>
+                                                    <option ${userInfo.userEmail2 == '@gmail.com' ? 'selected' : '' }>@gmail.com</option>
+                                                </select>
+                                                <button id="mail-check-btn" type="button" class="btn btn-primary" value="unchecked">이메일 인증</button>
+                                                <span id="mail-check-warn"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr id="mail-check-row" style="display: none; visibility: hidden;">
+                                        <td></td>
+                                        <td>
+                                            <div class="mail-check-box">
+                                                <input type="text" class="form-control mail-check-input" placeholder="인증번호 6자리를 입력하세요."
+                                                    maxlength="6">
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
@@ -66,7 +75,7 @@
                                     <tr>
                                         <td class="m-title">우편번호</td>
                                         <td><input class="form-control input-sm" name="addrZipNum" value="${userInfo.addrZipNum}" readonly>
-                                        	<button type="button" class="btn btn-primary" id="addBtn">주소찾기</button>
+                                        	<button type="button" class="btn btn-primary" id="addBtn" onclick="searchAddress()">주소찾기</button>
                                         </td>
                                     </tr>
                                     <tr>
@@ -124,4 +133,94 @@
     </section>
 
     <%@ include file="../include/footer.jsp" %>
+
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+        let code = '';
+        let checked = false;
+        const email1 = document.myForm.userEmail1.value;
+        const email2 = document.myForm.userEmail2.value;
+
+
+        // 이메일 인증 상태 메시지
+        function emailCheckMsg(state){
+            const $resultMsg = document.getElementById('mail-check-warn');
+            if(state){ 
+                $resultMsg.textContent = '이메일 인증 완료';
+                $resultMsg.style.color = 'green';
+            } else {
+                $resultMsg.textContent = "이메일 인증을 완료해 주세요."
+                $resultMsg.style.color = 'red';
+            }
+        }
+        
+        // 이메일 변경 상태 체크
+        function afterChange(val){
+            checked = false;
+            emailCheckMsg(checked);
+            console.log(val);
+        }
+
+        // 이메일 인증 버튼 클릭
+        document.getElementById('mail-check-btn').onclick = function(){
+            if(checked) return;
+            document.getElementById('mail-check-row').removeAttribute('style');
+            const email = document.myForm.userEmail1.value + document.myForm.userEmail2.value;
+
+            console.log('완성된 email: ' + email);
+            fetch('${pageContext.request.contextPath}/user/email', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'text/plain'
+                },
+                body: email
+            })
+            .then(res => res.text())
+            .then(data => {
+                console.log('인증번호: ', data);
+                code = data; // 서버가 전달한 인증번호를 전역변수에 저장.
+                alert('인증번호가 전송되었습니다. 확인 후 입력란에 정확히 입력해주세요');
+            })
+            .catch(err => {
+                console.log(err);
+                alert('알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요!');
+            }); // 비동기 끝.
+
+        }
+
+    
+
+        
+
+
+        
+
+         // 다음 주소 api  사용해 보기 (script src 추가 해야 함)
+         function searchAddress() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.myForm.addrZipNum.value = data.zonecode;
+                document.myForm.addrBasic.value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.myForm.addrDetail.focus();
+            }
+        }).open();
+    } // 주소 찾기 api 끝.
+
+    </script>
     
