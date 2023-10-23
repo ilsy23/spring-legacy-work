@@ -3,6 +3,7 @@ package com.spring.myweb.snsboard.entity;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class Snsboard {
+@Builder
+public class SnsBoard {
 
 	private int bno;
 	private String writer;
