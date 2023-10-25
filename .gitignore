@@ -17,7 +17,6 @@ local.properties
 .recommenders
 
 # Ignore Properties
-*.properties
 email.properties
 
 # External tool builders
